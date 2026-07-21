@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>VeridiumX — The Registry for What's Real</title>
+<meta name="description" content="VeridiumX ($VDX): an AI agent for real-time discovery, valuation, and monitoring of Real World Assets.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380;9..144,480;9..144,560;9..144,620&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A1210;
+    --ink-2:#0F1B17;
+    --ink-3:#132420;
+    --parchment:#F3EFE4;
+    --patina:#5FA98C;
+    --patina-dim:#3E7A64;
+    --patina-soft:rgba(95,169,140,0.14);
+    --gold:#C9A227;
+    --gold-soft:rgba(201,162,39,0.16);
+    --text-hi:#EDEAE0;
+    --text-mid:#A9B3AC;
+    --text-low:#6E7A73;
+    --line:rgba(237,234,224,0.10);
+    --line-strong:rgba(237,234,224,0.18);
+    --radius:2px;
+    --serif:'Fraunces', Georgia, serif;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+    --mono:'IBM Plex Mono', 'Courier New', monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--text-hi);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;max-width:100%;}
+  ::selection{background:var(--patina-dim);color:var(--text-hi);}
+
+  /* texture */
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(95,169,140,0.07), transparent 40%),
+      radial-gradient(circle at 88% 76%, rgba(201,162,39,0.05), transparent 45%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;position:relative;z-index:1;}
+  @media(max-width:640px){.wrap{padding:0 20px;}}
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--patina);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:14px;height:1px;
+    background:var(--patina);
+    display:inline-block;
+  }
+
+  h1,h2,h3{font-family:var(--serif);font-weight:560;letter-spacing:-0.01em;}
+
+  /* ============ NAV ============ */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,18,16,0.82);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 0;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-family:var(--serif);font-size:19px;font-weight:560;
+    color:var(--text-hi);
+  }
+  .brand .mark{
+    width:26px;height:26px;
+  }
+  .brand .tick{
+    font-family:var(--mono);font-size:11px;color:var(--patina);
+    border:1px solid var(--line-strong);
+    padding:2px 6px;border-radius:2px;
+    margin-left:4px;letter-spacing:0.04em;
+  }
+  .nav-links{display:flex;gap:36px;align-items:center;}
+  .nav-links a{
+    font-size:13.5px;color:var(--text-mid);
+    transition:color .2s;
+  }
+  .nav-links a:hover{color:var(--text-hi);}
+  .nav-cta{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--ink);
+    background:var(--patina);
+    padding:9px 18px;
+    border-radius:2px;
+    letter-spacing:0.03em;
+    transition:background .2s;
+  }
+  .nav-cta:hover{background:#74BC9E;}
+  .nav-mobile-toggle{display:none;}
+  @media(max-width:860px){
+    .nav-links{display:none;}
+    .nav-mobile-toggle{display:block;font-family:var(--mono);font-size:12px;color:var(--text-mid);}
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    padding:96px 0 0;
+    position:relative;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:48px;
+    align-items:center;
+  }
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr;}
+  }
+  .hero h1{
+    font-size:clamp(38px,5.4vw,66px);
+    line-height:1.04;
+    margin:22px 0 24px;
+    color:var(--text-hi);
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--patina);
+  }
+  .hero p.lead{
+    font-size:17px;
+    color:var(--text-mid);
+    max-width:520px;
+    margin-bottom:36px;
+  }
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+  .btn-primary{
+    font-family:var(--mono);font-size:13px;letter-spacing:0.03em;
+    background:var(--patina);color:var(--ink);
+    padding:14px 26px;border-radius:2px;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:transform .18s ease, background .18s ease;
+  }
+  .btn-primary:hover{background:#74BC9E;transform:translateY(-1px);}
+  .btn-ghost{
+    font-family:var(--mono);font-size:13px;letter-spacing:0.03em;
+    border:1px solid var(--line-strong);color:var(--text-hi);
+    padding:13px 24px;border-radius:2px;
+    transition:border-color .18s ease, background .18s ease;
+  }
+  .btn-ghost:hover{border-color:var(--patina);background:var(--patina-soft);}
+
+  /* Seal */
+  .seal-holder{
+    display:flex;justify-content:center;align-items:center;
+    position:relative;
+  }
+  .seal{width:min(320px,80vw);height:auto;}
+  .seal .ring-text{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;fill:var(--patina);}
+  .seal .ring-line{fill:none;stroke:var(--line-strong);}
+  .seal .core-line{fill:none;stroke:var(--patina-dim);stroke-width:0.6;}
+  .seal .status-dot{fill:var(--gold);}
+  @media(prefers-reduced-motion:no-preference){
+    .seal .rotor{animation:spin 34s linear infinite;transform-origin:150px 150px;}
+    .seal .rotor-rev{animation:spinrev 46s linear infinite;transform-origin:150px 150px;}
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes spinrev{to{transform:rotate(-360deg);}}
+
+  /* Ticker */
+  .ticker-strip{
+    margin-top:76px;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    background:var(--ink-2);
+    overflow:hidden;
+    position:relative;
+  }
+  .ticker-strip::before,.ticker-strip::after{
+    content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;
+    pointer-events:none;
+  }
+  .ticker-strip::before{left:0;background:linear-gradient(90deg,var(--ink-2),transparent);}
+  .ticker-strip::after{right:0;background:linear-gradient(-90deg,var(--ink-2),transparent);}
+  .ticker-track{
+    display:flex;gap:0;
+    width:max-content;
+    padding:15px 0;
+  }
+  @media(prefers-reduced-motion:no-preference){
+    .ticker-track{animation:scroll-left 42s linear infinite;}
+  }
+  @keyframes scroll-left{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  .ticker-item{
+    font-family:var(--mono);font-size:12.5px;color:var(--text-mid);
+    display:flex;align-items:center;gap:10px;
+    padding:0 28px;border-right:1px solid var(--line);
+    white-space:nowrap;
+  }
+  .ticker-item .asset{color:var(--text-hi);}
+  .ticker-item .delta.up{color:var(--patina);}
+  .ticker-item .delta.flag{color:var(--gold);}
+
+  /* ============ SECTION SHELL ============ */
+  section{padding:104px 0;position:relative;}
+  .section-head{max-width:640px;margin-bottom:56px;}
+  .section-head h2{font-size:clamp(28px,3.4vw,40px);margin-top:16px;color:var(--text-hi);}
+  .section-head p{color:var(--text-mid);margin-top:16px;font-size:15.5px;max-width:560px;}
+  .divider{height:1px;background:var(--line);border:none;}
+
+  /* ============ NARRATIVE ============ */
+  .narrative{padding:64px 0;border-top:1px solid var(--line);}
+  .narrative blockquote{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:clamp(22px,2.6vw,30px);
+    line-height:1.5;
+    color:var(--text-hi);
+    max-width:820px;
+  }
+  .narrative blockquote span{color:var(--patina);}
+  .narrative-cite{
+    margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--text-low);
+    letter-spacing:0.05em;
+  }
+
+  /* ============ PIPELINE (Discovery / Valuation / Monitoring) ============ */
+  .pipeline{border-top:1px solid var(--line);}
+  .pipeline-rows{display:flex;flex-direction:column;}
+  .pipe-row{
+    display:grid;
+    grid-template-columns:90px 1fr 1.3fr;
+    gap:32px;
+    padding:40px 0;
+    border-bottom:1px solid var(--line);
+    align-items:start;
+  }
+  @media(max-width:760px){
+    .pipe-row{grid-template-columns:56px 1fr;}
+    .pipe-row .pipe-desc{grid-column:1/-1;}
+  }
+  .pipe-num{
+    font-family:var(--mono);font-size:13px;color:var(--patina);
+    padding-top:4px;
+  }
+  .pipe-num .stage{display:block;font-size:9.5px;color:var(--text-low);letter-spacing:0.1em;margin-top:6px;}
+  .pipe-title h3{font-size:23px;color:var(--text-hi);}
+  .pipe-title .sub{font-family:var(--mono);font-size:11.5px;color:var(--text-low);margin-top:6px;letter-spacing:0.04em;}
+  .pipe-desc p{color:var(--text-mid);font-size:15px;max-width:460px;}
+  .pipe-desc .tags{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .pipe-desc .tag{
+    font-family:var(--mono);font-size:10.5px;color:var(--text-mid);
+    border:1px solid var(--line-strong);padding:4px 9px;border-radius:2px;
+  }
+
+  /* connecting trace line */
+  .pipeline-rows{position:relative;}
+  .pipeline-rows::before{
+    content:'';position:absolute;left:11px;top:44px;bottom:44px;width:1px;
+    background:repeating-linear-gradient(180deg,var(--patina-dim) 0 4px, transparent 4px 9px);
+  }
+  @media(max-width:760px){.pipeline-rows::before{left:7px;}}
+
+  /* ============ TRACTION / STATS ============ */
+  .traction{border-top:1px solid var(--line);}
+  .stats-note{
+    font-family:var(--mono);font-size:11.5px;color:var(--gold);
+    background:var(--gold-soft);
+    border:1px solid rgba(201,162,39,0.3);
+    padding:10px 14px;border-radius:2px;
+    display:inline-flex;align-items:center;gap:8px;
+    margin-bottom:40px;
+  }
+  .stats-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--line);border-left:1px solid var(--line);
+  }
+  @media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+  .stat-cell{
+    border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:34px 28px;
+  }
+  .stat-num{
+    font-family:var(--mono);font-size:clamp(26px,3vw,36px);color:var(--text-hi);
+    display:flex;align-items:baseline;gap:4px;
+  }
+  .stat-num .unit{font-size:15px;color:var(--patina);}
+  .stat-label{margin-top:10px;font-size:12.5px;color:var(--text-mid);letter-spacing:0.02em;}
+
+  /* ============ TOKEN ============ */
+  .token{border-top:1px solid var(--line);}
+  .token-panel{
+    display:grid;grid-template-columns:1fr 1fr;
+    border:1px solid var(--line-strong);
+    background:var(--ink-2);
+  }
+  @media(max-width:860px){.token-panel{grid-template-columns:1fr;}}
+  .token-left{padding:48px;border-right:1px solid var(--line-strong);}
+  @media(max-width:860px){.token-left{border-right:none;border-bottom:1px solid var(--line-strong);}}
+  .token-right{padding:48px;display:flex;flex-direction:column;justify-content:center;gap:22px;}
+  .token-status{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:18px;
+  }
+  .token-status .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);
+    box-shadow:0 0 0 3px var(--gold-soft);}
+  .token-left h3{font-size:26px;color:var(--text-hi);margin-bottom:12px;}
+  .token-left p{color:var(--text-mid);font-size:14.5px;margin-bottom:26px;}
+  .ca-box{
+    font-family:var(--mono);font-size:13px;color:var(--text-low);
+    border:1px dashed var(--line-strong);padding:14px 16px;border-radius:2px;
+    letter-spacing:0.03em;
+  }
+  .mech-list{list-style:none;}
+  .mech-list li{
+    display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);
+    font-size:14px;color:var(--text-mid);
+  }
+  .mech-list li:last-child{border-bottom:none;}
+  .mech-list .chk{color:var(--patina);font-family:var(--mono);}
+
+  /* ============ SAFETY ============ */
+  .safety{border-top:1px solid var(--line);}
+  .safety-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  @media(max-width:760px){.safety-grid{grid-template-columns:1fr;}}
+  .safety-cell{background:var(--ink);padding:32px;}
+  .safety-cell .idx{font-family:var(--mono);font-size:11px;color:var(--patina-dim);}
+  .safety-cell p{margin-top:12px;font-size:14px;color:var(--text-mid);}
+  .official-links{
+    margin-top:44px;display:flex;flex-wrap:wrap;gap:12px;
+  }
+  .official-links a{
+    font-family:var(--mono);font-size:12px;color:var(--text-mid);
+    border:1px solid var(--line-strong);padding:9px 14px;border-radius:2px;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:border-color .2s,color .2s;
+  }
+  .official-links a:hover{border-color:var(--patina);color:var(--text-hi);}
+
+  /* ============ CTA ============ */
+  .cta-final{
+    border-top:1px solid var(--line);text-align:center;padding:120px 0;
+  }
+  .cta-final h2{font-size:clamp(30px,4.4vw,52px);max-width:720px;margin:20px auto 32px;}
+  .cta-final .lead{color:var(--text-mid);max-width:460px;margin:0 auto 36px;}
+  .waitlist-form{
+    display:flex;gap:10px;max-width:420px;margin:0 auto;flex-wrap:wrap;justify-content:center;
+  }
+  .waitlist-form input{
+    flex:1;min-width:220px;
+    background:var(--ink-2);border:1px solid var(--line-strong);
+    color:var(--text-hi);padding:14px 16px;border-radius:2px;
+    font-family:var(--sans);font-size:14px;
+  }
+  .waitlist-form input:focus{outline:none;border-color:var(--patina);}
+  .waitlist-form input::placeholder{color:var(--text-low);}
+
+  /* ============ FOOTER ============ */
+  footer{border-top:1px solid var(--line);padding:56px 0 36px;}
+  .footer-grid{
+    display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;margin-bottom:48px;
+  }
+  @media(max-width:760px){.footer-grid{grid-template-columns:1fr 1fr;}}
+  .footer-brand{font-family:var(--serif);font-size:19px;color:var(--text-hi);}
+  .footer-brand p{margin-top:14px;font-size:13px;color:var(--text-low);max-width:280px;}
+  .footer-col h4{
+    font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--text-low);margin-bottom:16px;
+  }
+  .footer-col a{display:block;font-size:13.5px;color:var(--text-mid);margin-bottom:10px;transition:color .2s;}
+  .footer-col a:hover{color:var(--text-hi);}
+  .footer-bottom{
+    display:flex;justify-content:space-between;align-items:center;
+    padding-top:28px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;color:var(--text-low);
+    flex-wrap:wrap;gap:12px;
+  }
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    .ticker-track{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 26 26" fill="none">
+          <circle cx="13" cy="13" r="12" stroke="#5FA98C" stroke-width="1"/>
+          <circle cx="13" cy="13" r="7.5" stroke="#5FA98C" stroke-width="1" stroke-dasharray="1.5 2.4"/>
+          <circle cx="13" cy="13" r="2.4" fill="#C9A227"/>
+        </svg>
+        VeridiumX <span class="tick">$VDX</span>
+      </div>
+      <div class="nav-links">
+        <a href="#engine">Product</a>
+        <a href="#traction">Traction</a>
+        <a href="#token">Token</a>
+        <a href="#safety">Verify</a>
+      </div>
+      <a href="#notify" class="nav-cta">Notify Me →</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Pre-Genesis · Real World Asset Intelligence</div>
+          <h1>The registry<br>for what's <em>real</em>.</h1>
+          <p class="lead">VeridiumX is an AI agent built to discover, value, and monitor Real World Assets in real time — turning off-chain assets into data you can actually underwrite.</p>
+          <div class="hero-actions">
+            <a href="#notify" class="btn-primary">Get Genesis Alerts →</a>
+            <a href="#engine" class="btn-ghost">See the Engine</a>
+          </div>
+        </div>
+        <div class="seal-holder">
+          <svg class="seal" viewBox="0 0 300 300">
+            <defs>
+              <path id="ringPath" d="M 150,150 m -118,0 a 118,118 0 1,1 236,0 a 118,118 0 1,1 -236,0"/>
+              <path id="ringPath2" d="M 150,150 m -95,0 a 95,95 0 1,0 190,0 a 95,95 0 1,0 -190,0"/>
+            </defs>
+            <circle class="ring-line" cx="150" cy="150" r="132"/>
+            <circle class="ring-line" cx="150" cy="150" r="70"/>
+            <g class="rotor">
+              <text class="ring-text">
+                <textPath href="#ringPath" startOffset="0%">VERIFIED · REAL-WORLD · ASSET · DATA ·</textPath>
+              </text>
+            </g>
+            <g class="rotor-rev">
+              <text class="ring-text">
+                <textPath href="#ringPath2" startOffset="0%">DISCOVERY · VALUATION · MONITORING ·</textPath>
+              </text>
+            </g>
+            <g stroke-width="0.6" class="core-line">
+              <line x1="150" y1="150" x2="150" y2="86"/>
+              <line x1="150" y1="150" x2="205" y2="181"/>
+              <line x1="150" y1="150" x2="95" y2="181"/>
+            </g>
+            <circle class="status-dot" cx="150" cy="150" r="4"/>
+            <circle class="status-dot" cx="150" cy="86" r="2.2" opacity="0.8"/>
+            <circle class="status-dot" cx="205" cy="181" r="2.2" opacity="0.8"/>
+            <circle class="status-dot" cx="95" cy="181" r="2.2" opacity="0.8"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="ticker-strip">
+      <div class="ticker-track" id="tickerTrack">
+        <!-- content injected + duplicated via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- NARRATIVE -->
+  <section class="narrative">
+    <div class="wrap reveal">
+      <blockquote>Real World Assets don't come with an API. <span>Someone has to find them, price them, and watch them</span> — every day, at scale, without getting tired.</blockquote>
+      <div class="narrative-cite">— Why VeridiumX exists</div>
+    </div>
+  </section>
+
+  <!-- ENGINE / PIPELINE -->
+  <section id="engine" class="pipeline">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">The Engine</div>
+        <h2>One agent, three disciplines, run in sequence.</h2>
+        <p>Discovery finds the asset. Valuation prices it. Monitoring keeps that price honest. Each stage feeds the next — nothing enters the registry without passing through all three.</p>
+      </div>
+
+      <div class="pipeline-rows">
+        <div class="pipe-row reveal">
+          <div class="pipe-num">01<span class="stage">Intake</span></div>
+          <div class="pipe-title">
+            <h3>Discovery</h3>
+            <div class="sub">SOURCE → PARSE → CLASSIFY</div>
+          </div>
+          <div class="pipe-desc">
+            <p>Scans registries, filings, and on-chain issuances to surface Real World Assets as they're created — real estate parcels, receivables, credit instruments, commodities — before they're broadly listed.</p>
+            <div class="tags"><span class="tag">public registries</span><span class="tag">filings</span><span class="tag">on-chain issuance</span></div>
+          </div>
+        </div>
+
+        <div class="pipe-row reveal">
+          <div class="pipe-num">02<span class="stage">Pricing</span></div>
+          <div class="pipe-title">
+            <h3>Valuation</h3>
+            <div class="sub">MODEL → CROSS-CHECK → SCORE</div>
+          </div>
+          <div class="pipe-desc">
+            <p>Runs each discovered asset through comparable-market and cash-flow models, cross-checked against independent data sources, and outputs a confidence-scored valuation rather than a single point estimate.</p>
+            <div class="tags"><span class="tag">comparables</span><span class="tag">cash-flow models</span><span class="tag">confidence score</span></div>
+          </div>
+        </div>
+
+        <div class="pipe-row reveal">
+          <div class="pipe-num">03<span class="stage">Custody of Truth</span></div>
+          <div class="pipe-title">
+            <h3>Monitoring</h3>
+            <div class="sub">WATCH → FLAG → RE-VALUE</div>
+          </div>
+          <div class="pipe-desc">
+            <p>Re-checks every asset on a rolling basis, flags material changes — defaults, re-appraisals, ownership shifts — and re-runs valuation automatically so the registry never goes stale.</p>
+            <div class="tags"><span class="tag">continuous re-check</span><span class="tag">anomaly flags</span><span class="tag">auto re-valuation</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRACTION -->
+  <section id="traction" class="traction">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">The Receipts</div>
+        <h2>Where the beta stands today.</h2>
+      </div>
+      <div class="stats-note reveal">⚠ Early-access figures — update with your real numbers before publishing.</div>
+      <div class="stats-grid reveal">
+        <div class="stat-cell">
+          <div class="stat-num">1,200<span class="unit">+</span></div>
+          <div class="stat-label">Assets indexed in beta</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">42<span class="unit">+</span></div>
+          <div class="stat-label">Data sources connected</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">$180<span class="unit">M+</span></div>
+          <div class="stat-label">Cumulative asset value tracked</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">96<span class="unit">%</span></div>
+          <div class="stat-label">Valuation model confidence, backtested</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOKEN -->
+  <section id="token" class="token">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">The Launch</div>
+        <h2>$VDX — genesis not yet scheduled.</h2>
+        <p>When VeridiumX launches its token, it will be through a fair Community Pool via Virtuals Protocol — the same mechanism, and the same terms, for everyone.</p>
+      </div>
+
+      <div class="token-panel reveal">
+        <div class="token-left">
+          <div class="token-status"><span class="dot"></span>Pre-Genesis · Date TBA</div>
+          <h3>$VDX on Virtuals Protocol</h3>
+          <p>Contract address will be published here and across official channels only, at the moment of genesis. Do not trust any address shared before that announcement.</p>
+          <div class="ca-box">CA: to be published at genesis — verify only via official channels</div>
+        </div>
+        <div class="token-right">
+          <ul class="mech-list">
+            <li><span class="chk">✓</span> No prebuy — nobody owns the bottom of the curve before the community.</li>
+            <li><span class="chk">✓</span> No team allocation on the launch pool.</li>
+            <li><span class="chk">✓</span> Fill-or-kill pool — it launches in full, or every pledge is refunded.</li>
+            <li><span class="chk">✓</span> Graduates to a live market once the pool fills.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAFETY -->
+  <section id="safety" class="safety">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Stay Safe</div>
+        <h2>Verify everything. Trust nothing by default.</h2>
+      </div>
+      <div class="safety-grid reveal">
+        <div class="safety-cell">
+          <div class="idx">01</div>
+          <p>Only ever trust the contract address published through the official links below, once genesis is announced.</p>
+        </div>
+        <div class="safety-cell">
+          <div class="idx">02</div>
+          <p>The team will never DM first, and no one will ever ask you for your seed phrase or private keys.</p>
+        </div>
+        <div class="safety-cell">
+          <div class="idx">03</div>
+          <p>Check everything on-chain before you act on it. Never trust, always verify — no exceptions.</p>
+        </div>
+      </div>
+
+      <div class="official-links reveal">
+        <a href="#">Website ↗</a>
+        <a href="#">X / Twitter ↗</a>
+        <a href="#">Telegram ↗</a>
+        <a href="#">Virtuals Protocol ↗</a>
+        <a href="#">Docs ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-final" id="notify">
+    <div class="wrap reveal">
+      <div class="eyebrow" style="justify-content:center;">Be first to know</div>
+      <h2>The registry opens when the pool fills. Not before.</h2>
+      <p class="lead">Leave your email and we'll notify you the moment genesis is scheduled — nothing else, nothing in between.</p>
+      <form class="waitlist-form" onsubmit="event.preventDefault(); this.querySelector('input').value='Request received ✓';">
+        <input type="email" placeholder="you@domain.com" required>
+        <button type="submit" class="btn-primary">Notify Me</button>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        VeridiumX
+        <p>An AI agent for the discovery, valuation, and monitoring of Real World Assets — built product-first, token second.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#engine">The Engine</a>
+        <a href="#traction">Traction</a>
+        <a href="#">Docs</a>
+      </div>
+      <div class="footer-col">
+        <h4>Token</h4>
+        <a href="#token">$VDX</a>
+        <a href="#safety">Verify</a>
+        <a href="#">Whitepaper</a>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
+        <a href="#">X / Twitter</a>
+        <a href="#">Telegram</a>
+        <a href="#">Discord</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 VeridiumX. All rights reserved.</span>
+      <span>Product first. Proof second. Token last.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Ticker content — sample RWA discovery feed (placeholder data)
+  const tickerData = [
+    {asset:'RE-PARCEL · TX-4471', val:'$2.4M', delta:'+1.2%', flag:false},
+    {asset:'T-BILL · 26W-9902', val:'$980K', delta:'flat', flag:false},
+    {asset:'INVOICE-RCV · BATCH 118', val:'$410K', delta:'+3.6%', flag:false},
+    {asset:'CARBON-CR · VCS-3390', val:'$76K', delta:'REVIEW', flag:true},
+    {asset:'RE-PARCEL · CA-1187', val:'$5.1M', delta:'+0.4%', flag:false},
+    {asset:'PRIVATE-CREDIT · PC-556', val:'$1.8M', delta:'flat', flag:false},
+    {asset:'COMMODITY-WH · GOLD-22', val:'$3.3M', delta:'+2.1%', flag:false},
+    {asset:'INVOICE-RCV · BATCH 119', val:'$220K', delta:'REVIEW', flag:true},
+  ];
+  const track = document.getElementById('tickerTrack');
+  function renderTicker(){
+    const html = tickerData.map(d => `
+      <div class="ticker-item">
+        <span class="asset">${d.asset}</span>
+        <span>${d.val}</span>
+        <span class="delta ${d.flag ? 'flag' : 'up'}">${d.delta}</span>
+      </div>`).join('');
+    track.innerHTML = html + html; // duplicate for seamless loop
+  }
+  renderTicker();
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.12});
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
